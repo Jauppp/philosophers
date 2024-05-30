@@ -6,7 +6,7 @@
 #    By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/28 13:31:53 by cdomet-d          #+#    #+#              #
-#    Updated: 2024/05/29 15:15:20 by cdomet-d         ###   ########lyon.fr    #
+#    Updated: 2024/05/30 17:52:03 by cdomet-d         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,43 +14,76 @@ NAME:= philo
 BDIR:= .bdir/
 H:= philo.h
 
-CC:= cc
-CFLAGS:= -Werror -Wextra -Wall -g3 -I $(H)
-DEPFLAGS = -MMD -MP
+CC := cc
+CFLAGS := -Werror -Wextra -Wall -g3 
+CPPFLAGS := -I . -MMD -MP
 MAKEFLAGS += --no-print-directory
-# INCLUDE:= -lpthread
+S_DIR= src/
 
-SRC:= main.c \
+SRCS+= $(addprefix $(S_DIR), $(M_SRC))
+M_SRC:=	main.c \
+		init_philo.c \
+		routine.c \
 
-OBJ:= $(addprefix $(BDIR), $(SRC:%.c=%.o))
-DEPS:= $(OBJ:%.o=%.d)
+SRCS+= $(addprefix $(S_DIR)$(U_SUBDIR), $(U_SRC))
+U_SUBDIR:= utils/
+U_SRC:=	display.c \
+		error_management.c \
+		ft_atoi.c \
 
-RM:= rm -rf
+OBJS := $(patsubst $(S_DIR)%.c,$(BDIR)%.o,$(SRCS))
+DEPS := $(OBJS:%.o=%.d)
+
+RM := rm -rf
 
 all: $(NAME)
+bonus : $(BONUS)
 
-$(NAME): $(OBJ)
-	@printf '$(CB)%.40s\n$(R)' "-- Making $(NAME) ---------------------------------------------------------------------"
-	$(CC) $(CFLAGS) $(OBJ) -o $(NAME) $(INCLUDE)
-	@printf '$(CB)%.40s\n$(R)' "-- All done ! <3 ---------------------------------------------------------------------"
+$(NAME): $(OBJS)
+	@echo
+	@printf '$(CB)%.40s\n\n$(R)' "-- Making $(NAME)... ---------------------------------------------------------------------"
+	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+	@echo
 
-$(BDIR)%.o: $(SRC)%.c $(H)
-	@printf '$(CB)%.40s\n$(R)' "-- Creating objects ---------------------------------------------------------------------"
+$(BDIR)%.o: $(S_DIR)%.c $(H)
 	@mkdir -p $(dir $@)
-	@$(CC) $(CFLAGS) $(DEPFLAGS) -o $@ -c $<
-	@printf '$(F)%.40s\n$(R)' "creating $@"
-	
--include $(DEPS)
+	@echo "$@"
+	@$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
 
-clean: 
-	@printf '$(CB)%.40s\n$(R)' "-- Deleting $(BDIR) ---------------------------------------------------------------------"
+ -include $(DEPS)
+
+clean:
+	@echo
+	@printf '$(CB)%.40s\n$(R)' "-- Cleaning... ---------------------------------------------------------------------"
 	$(RM) $(BDIR)
 
+	
 fclean: clean
-	@printf '$(CB)%.40s\n$(R)' "-- Deleting $(NAME) ---------------------------------------------------------------------"
 	$(RM) $(NAME)
-
+	@echo
+	
 re: fclean all
+
+VPARAM:= valgrind --leak-check=full --track-origin=yes --tool=helgrind
+run: all
+	$(VPARAM) ./$(NAME)
+
+help:
+	@echo "make \t\t $(FAINT)creates the executable$(R)"
+	@echo "make bonus \t $(FAINT)creates the bonus executable$(R)"
+	@echo "make clean \t $(FAINT)deletes object files & dependencies$(R)"
+	@echo "make fclean \t $(FAINT)deletes everything the makefile created$(R)"
+	@echo "make kitty \t $(FAINT)prints a lil kitty on the terminal$(R)"
+	@echo "make re \t $(FAINT)deletes all objects & dependencies and recompiles the executable$(R)"
+	@echo "make re_bonus \t $(FAINT)deletes all objects & dependencies and recompiles the bonus$(R)"
+
+kitty:
+	@echo "   |\__/,|   ( \  "
+	@echo " _.|o o  |_   ) ) "
+	@echo "-(((---(((--------"
+
+
+.PHONY : clean fclean all re help run kitty
 
 # Text
 R=\033[0m

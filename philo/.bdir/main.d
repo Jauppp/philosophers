@@ -1,3 +1,3 @@
-.bdir/main.o: main.c philo.h
+.bdir/main.o: src/main.c philo.h
 
 philo.h:
