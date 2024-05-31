@@ -6,7 +6,7 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 15:16:29 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/05/30 17:47:44 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/05/31 17:44:55 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@ int	main(int argc, char *argv[])
 {
 	t_param	param;
 
-	if (argc > 6 || argc < 4)
-		return (derr("Please enter in milliseconds :\n - number_of_philosophers\n - time_to_die\n - time_to_eat\n - time_to_sleep"));
+	if (argc > 6 || argc < 5)
+		return (derr("Please enter in milliseconds :\n - number_of_philosophers\n - time_to_die\n - time_to_eat\n - time_to_sleep", NULL));
 	if (init_params(&param, argv) == ERROR)
 		return (ERROR);
-	dpm(param);
+	// dpm(param);
 }
 
 	// pthread_t 	phi;
