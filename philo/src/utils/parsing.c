@@ -1,26 +1,45 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   routine.c                                          :+:      :+:    :+:   */
+/*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/30 13:16:05 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/03 18:00:54 by cdomet-d         ###   ########lyon.fr   */
+/*   Created: 2024/06/03 12:57:13 by cdomet-d          #+#    #+#             */
+/*   Updated: 2024/06/03 14:35:59 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	*routine(void *arg)
+int isnotdigit(char *str)
 {
-	t_philo	*phi;
-	// pthread_t	tid;
-	
-	// tid = pthread_self();
-	phi = (t_philo *)arg;
-	fprintf(stderr, "🍴 I am philo %3d\n", phi->ph_id);
-	// thread : %10ld\n
-	// tid
-	return (NULL);
+	size_t	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] < '0' || str[i] > '9')
+		{
+			return (ERROR);
+		}
+		i++;
+	}
+	return (SUCCESS);
+}
+
+int	isdigit_param(char **args)
+{
+	size_t	i;
+
+	i = 1;
+	if (!args || !args[i])
+		return (ERROR);
+	while (args[i])
+	{
+		if (isnotdigit(args[i]) == ERROR)
+			return (derr("Alpha character in", args[i]));
+		i++;
+	}
+	return (SUCCESS);
 }

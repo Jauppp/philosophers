@@ -6,21 +6,49 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 15:16:29 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/05/31 17:44:55 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/03 17:46:46 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+int join_phi(t_table *table)
+{
+	ssize_t		i;
+	int	err;
+
+	i = 0;
+	while (i < table->param.n_philo)
+	{
+		err = pthread_join(table->philos[i++]->t_id, NULL);
+		if (err != 0)
+		{
+			printf("%d\n", err);
+			return (derr("Error joining threads: ", NULL));
+		}
+	}
+	i = 0;
+	while (table->philos[i])
+		free(table->philos[i++]);
+	free(table->philos);
+	return (SUCCESS);
+}
+
 int	main(int argc, char *argv[])
 {
-	t_param	param;
+	t_table	table;
 
 	if (argc > 6 || argc < 5)
-		return (derr("Please enter in milliseconds :\n - number_of_philosophers\n - time_to_die\n - time_to_eat\n - time_to_sleep", NULL));
-	if (init_params(&param, argv) == ERROR)
+		return (derr(INPUT_ERROR, NULL));
+	if (init_params(&table.param, argv) == ERROR)
 		return (ERROR);
-	// dpm(param);
+	if (init_philo(&table) == ERROR)
+	{
+		join_phi(&table);
+		return(ERROR);
+	}
+	join_phi(&table);
+	return (SUCCESS);
 }
 
 	// pthread_t 	phi;

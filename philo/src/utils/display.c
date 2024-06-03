@@ -6,7 +6,7 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 15:41:42 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/05/31 17:50:07 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/03 17:31:32 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,11 +49,21 @@ ssize_t	ft_putl_fd(char *s, int fd)
 
 void	dpm(t_param param)
 {
-	printf("%.15s [%ld]\n", "number of philosophers",  param.nb_of_philo);
-	printf("%.15s [%ld]\n", "time to die", param.time_to_die);
-	printf("%.15s [%ld]\n", "time to eat", param.time_to_eat);
-	printf("%.15s [%ld]\n", "time to sleep", param.time_to_sleep);
-	if (param.nb_must_eat != 0)
-		printf("%.15s [%ld]\n", "number of time\na philosopher must eat", \
-		param.nb_must_eat);
+	printf("%.35s\n", "-- PARAMS --------------------------------------------");
+	printf("%.35s\t | %4ld | \n", "number of philo",  param.n_philo);
+	printf("%.35s\t | %4ld | ms\n", "time to die", param.t_to_die);
+	printf("%.35s\t | %4ld | ms\n", "time to eat", param.t_to_eat);
+	printf("%.35s\t | %4ld | ms\n", "time to sleep", param.t_to_sleep);
+	if (param.n_must_eat != -1)
+		printf("%.35s\t | %4ld | ms\n", "must eat", param.n_must_eat);
+	printf("%.35s\n", "------------------------------------------------------");
 }
+
+// void dphi(t_philo phi)
+// {
+// 	size_t	i;
+
+// 	i = 0;
+// 	while (phi.philo[i] != 0)
+// 		printf("%lu\n", phi.philarr[i++]);
+// }

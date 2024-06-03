@@ -6,7 +6,7 @@
 #    By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/28 13:31:53 by cdomet-d          #+#    #+#              #
-#    Updated: 2024/05/30 17:52:03 by cdomet-d         ###   ########lyon.fr    #
+#    Updated: 2024/06/03 15:46:08 by cdomet-d         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ S_DIR= src/
 
 SRCS+= $(addprefix $(S_DIR), $(M_SRC))
 M_SRC:=	main.c \
-		init_philo.c \
+		initialisation.c \
 		routine.c \
 
 SRCS+= $(addprefix $(S_DIR)$(U_SUBDIR), $(U_SRC))
@@ -30,6 +30,7 @@ U_SUBDIR:= utils/
 U_SRC:=	display.c \
 		error_management.c \
 		ft_atoi.c \
+		parsing.c \
 
 OBJS := $(patsubst $(S_DIR)%.c,$(BDIR)%.o,$(SRCS))
 DEPS := $(OBJS:%.o=%.d)
@@ -64,10 +65,13 @@ fclean: clean
 	
 re: fclean all
 
-VPARAM:= valgrind --leak-check=full --track-origin=yes --tool=helgrind
-run: all
-	$(VPARAM) ./$(NAME)
+LVPARAM:= valgrind --leak-check=full --track-origins=yes
+leaks: all
+	$(LVPARAM) ./$(NAME) 5 20 20 20
 
+RVPARAM= valgrind --tool=helgrind
+race: all
+	$(RVPARAM) ./$(NAME) 5 20 20 20
 help:
 	@echo "make \t\t $(FAINT)creates the executable$(R)"
 	@echo "make bonus \t $(FAINT)creates the bonus executable$(R)"
