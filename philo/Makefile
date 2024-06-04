@@ -6,7 +6,7 @@
 #    By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/28 13:31:53 by cdomet-d          #+#    #+#              #
-#    Updated: 2024/06/03 15:46:08 by cdomet-d         ###   ########lyon.fr    #
+#    Updated: 2024/06/04 14:13:19 by cdomet-d         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -65,13 +65,14 @@ fclean: clean
 	
 re: fclean all
 
+PARAM:= 10 60 60 60
 LVPARAM:= valgrind --leak-check=full --track-origins=yes
 leaks: all
-	$(LVPARAM) ./$(NAME) 5 20 20 20
+	$(LVPARAM) ./$(NAME) $(PARAM)
 
 RVPARAM= valgrind --tool=helgrind
 race: all
-	$(RVPARAM) ./$(NAME) 5 20 20 20
+	$(RVPARAM) ./$(NAME) $(PARAM)
 help:
 	@echo "make \t\t $(FAINT)creates the executable$(R)"
 	@echo "make bonus \t $(FAINT)creates the bonus executable$(R)"

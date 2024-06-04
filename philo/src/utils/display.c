@@ -6,7 +6,7 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 15:41:42 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/03 17:31:32 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/04 14:59:33 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,11 +59,10 @@ void	dpm(t_param param)
 	printf("%.35s\n", "------------------------------------------------------");
 }
 
-// void dphi(t_philo phi)
-// {
-// 	size_t	i;
-
-// 	i = 0;
-// 	while (phi.philo[i] != 0)
-// 		printf("%lu\n", phi.philarr[i++]);
-// }
+void dphi(t_philo phi)
+{
+	fprintf(stderr, "| I am philo %.3d 🍴 \t\t\t\t|\n|\
+| My left fork is at %d - my right fork is at %d \t|\n\
+| I last ate %.3ld ms ago, it was my %.3ldth meal\t|\n", phi.phid, \
+	phi.fork[0], phi.fork[1], phi.last_ate, phi.nb_ate);
+}

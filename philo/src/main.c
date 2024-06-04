@@ -6,72 +6,53 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 15:16:29 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/03 17:46:46 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/04 14:55:04 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int join_phi(t_table *table)
+int join_phi(t_philo *philo)
 {
 	ssize_t		i;
 	int	err;
 
 	i = 0;
-	while (i < table->param.n_philo)
+	if (!philo)
+		return (SUCCESS);
+	while (i < philo->param->n_philo)
 	{
-		err = pthread_join(table->philos[i++]->t_id, NULL);
+		err = pthread_join(philo[i++].tid, NULL);
 		if (err != 0)
 		{
 			printf("%d\n", err);
 			return (derr("Error joining threads: ", NULL));
 		}
 	}
-	i = 0;
-	while (table->philos[i])
-		free(table->philos[i++]);
-	free(table->philos);
+	pthread_mutex_destroy(&philo->param->init_lock);
+	free(philo);
 	return (SUCCESS);
 }
 
 int	main(int argc, char *argv[])
 {
-	t_table	table;
+	t_param	param;
+	t_philo	*philo;
 
+	philo = NULL;
 	if (argc > 6 || argc < 5)
 		return (derr(INPUT_ERROR, NULL));
-	if (init_params(&table.param, argv) == ERROR)
+	if (init_params(&param, argv) == ERROR)
 		return (ERROR);
-	if (init_philo(&table) == ERROR)
+	philo = malloc((param.n_philo + 1) * sizeof (t_philo));
+	if (!philo)
+		return (derr("Memory allocation issue", NULL));
+	if (init_philo(&param, philo) == ERROR)
 	{
-		join_phi(&table);
+		join_phi(philo);
 		return(ERROR);
 	}
-	join_phi(&table);
+	join_phi(philo);
 	return (SUCCESS);
 }
 
-	// pthread_t 	phi;
-	// pthread_t	*a_philo;
-	// size_t	i;
-	// i = 0;
-	// while (i < 5)
-	// {
-	// 	a_philo[i] = 0;
-	// 	i++;
-	// }
-	// i = 0;
-	// while (i < 5)
-	// {
-	// 	phi = create_philo();
-	// 	if (phi == 1)
-	// 		return (ERROR);
-	// 	a_philo[i] = phi;
-	// 	i++;
-	// }
-	// i = 0;
-	// while (i < 5)
-	// {
-	// 	pthread_join(a_philo[i], NULL);
-	// 	i++;
-	// }

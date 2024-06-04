@@ -6,7 +6,7 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 13:15:03 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/03 18:06:05 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/04 15:01:01 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,48 +47,44 @@ int	init_params(t_param	*param, char **args)
 	return (SUCCESS);
 }
 
-static t_philo	*create_t_philo(int ph_id)
+static t_philo	create_t_philo(int phid, t_param *param)
 {
-	t_philo	*philo;
+	t_philo	philo;
+	t_fork	fork;
 	
-	philo = malloc(1 * sizeof(t_philo));
-	if (!philo)
-		return(NULL);
-	philo->ph_id = ph_id;
+	fork.fork = true;
+	philo.last_ate = 0;
+	philo.nb_ate = 0;
+	philo.param = param;
+	philo.phid = phid;
+	philo.fork[0] = fork;
 	return (philo);
 }
 
-static pthread_t create_thread(t_philo *phi)
+static void create_thread(t_philo *philo)
 {
 	//TODO: check leaks when pthread_create fails
-	pthread_t	philo;
-
-	if (pthread_create(&philo, NULL, routine, phi) == -1)
-		return (ERROR);
-	return (philo);
+	if (pthread_create(&philo->tid, NULL, routine, (void *)philo) != 0)
+		return ;
 }
 
-int	init_philo(t_table *table)
+int	init_philo(t_param *param, t_philo *philo)
 {
-	ssize_t	i;
-
+	ssize_t		i;
+	
 	i = 0;
-	table->philos = malloc((table->param.n_philo + 1) * sizeof (t_philo **));
-	if (!table->philos)
-		return (derr("Memory allocation issue", NULL));
-	table->philos[table->param.n_philo] = NULL;
-	while (i < table->param.n_philo)
+	pthread_mutex_init(&param->init_lock, NULL);
+	param->end = false;
+	while (i < param->n_philo)
 	{
-		table->philos[i] = create_t_philo(i);
-		table->philos[i]->t_id = create_thread(table->philos[i]);
-		if (table->philos[i]->t_id == ERROR)
+		philo[i] = create_t_philo(i + 1, param);
+		create_thread(philo + i);
+		if (philo[i].tid == ERROR)
 			return (ERROR);
 		i++;
 	}
-	// i = 0;
-	// while(table->philos[i])
-	// 	fprintf(stderr, "🍴 I am philo : %3d\n", table->philos[i++]->ph_id);
+	pthread_mutex_lock(&param->init_lock);
+	param->end = true;
+	pthread_mutex_unlock(&param->init_lock);
 	return (SUCCESS);
 }
-
-
