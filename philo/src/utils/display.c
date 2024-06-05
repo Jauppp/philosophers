@@ -6,11 +6,11 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 15:41:42 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/04 17:33:24 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/05 10:52:49 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "philo.h"
+#include "philo.h"
 
 static size_t	ft_strlen(const char *s)
 {
@@ -50,7 +50,7 @@ ssize_t	ft_putl_fd(char *s, int fd)
 void	dpm(t_param param)
 {
 	printf("%.35s\n", "-- PARAMS --------------------------------------------");
-	printf("%.35s\t | %4ld | \n", "number of philo",  param.n_philo);
+	printf("%.35s\t | %4ld | \n", "number of philo", param.n_philo);
 	printf("%.35s\t | %4ld | ms\n", "time to die", param.t_to_die);
 	printf("%.35s\t | %4ld | ms\n", "time to eat", param.t_to_eat);
 	printf("%.35s\t | %4ld | ms\n", "time to sleep", param.t_to_sleep);
@@ -59,7 +59,7 @@ void	dpm(t_param param)
 	printf("%.35s\n", "------------------------------------------------------");
 }
 
-void dphi(t_philo phi)
+void	dphi(t_philo phi)
 {
 	fprintf(stderr, "| I am philo %.3d 🍴 \t\t\t\t|\n\
 | My left fork is at %d - my right fork is at %d  |\n\

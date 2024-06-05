@@ -6,13 +6,13 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 12:57:13 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/03 14:35:59 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/05 10:53:07 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int isnotdigit(char *str)
+int	isnotdigit(char *str)
 {
 	size_t	i;
 

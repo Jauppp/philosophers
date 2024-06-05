@@ -6,7 +6,7 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 15:17:05 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/04 16:44:30 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/05 10:50:21 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,18 +19,21 @@
 # include <limits.h>
 # include <unistd.h>
 # include <stdbool.h>
-#include <sys/time.h>
+# include <sys/time.h>
 
 # define ERROR 1
 # define SUCCESS 0
-# define INPUT_ERROR "Please enter in milliseconds :\n - number_of_philosophers\n - time_to_die\n - time_to_eat\n - time_to_sleep"
+# define INPUT_ERROR "Please enter in milliseconds :\n - \
+number_of_philosophers\n - time_to_die\n - time_to_eat\n - time_to_sleep"
 
-typedef struct s_fork {
-	bool	fork;
+typedef struct s_fork
+{
+	bool			fork;
 	pthread_mutex_t	mfork;
-} t_fork;
+}	t_fork;
 
-typedef struct s_param {
+typedef struct s_param
+{
 	bool			end;
 	pthread_mutex_t	init_lock;
 	ssize_t			n_must_eat;
@@ -40,15 +43,16 @@ typedef struct s_param {
 	time_t			t_to_eat;
 	time_t			t_to_sleep;
 	t_fork			*arfork;
-} t_param;
+}	t_param;
 
-typedef struct s_philo {
-	pthread_t	tid;
-	int			phid;
-	t_fork		fork[2];
-	size_t		nb_ate;
-	time_t		last_ate;
-	t_param		*param;
+typedef struct s_philo
+{
+	pthread_t		tid;
+	int				phid;
+	t_fork			fork[2];
+	size_t			nb_ate;
+	time_t			last_ate;
+	t_param			*param;
 }	t_philo;
 
 // utils ---------------------
@@ -60,27 +64,26 @@ void	dpm(t_param param);
 void	dphi(t_philo phi);
 
 /* error_management.c */
-int	derr(char *err, char *param);
+int		derr(char *err, char *param);
 
 /* ft_atoi.c */
 
-int	ft_atoi(char *nptr);
+int		ft_atoi(char *nptr);
 
 /* parsing.c */
-int isnotdigit(char *str);
-int	isdigit_param(char **args);
+int		isnotdigit(char *str);
+int		isdigit_param(char **args);
 
 // src -----------------------
 
 /* main.c */
-int	main(int argc, char *argv[]);
-int join_phi(t_philo *philo);
+int		join_phi(t_philo *philo);
 
 /* routine.c */
 void	*routine(void *arg);
 
 /* initialisation.c */
-int	init_params(t_param	*param, char **args);
-int	init_philo(t_param *param, t_philo *philo);
+int		init_params(t_param	*param, char **args);
+int		init_philo(t_param *param, t_philo *philo);
 
 #endif
