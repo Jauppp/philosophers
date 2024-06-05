@@ -6,7 +6,7 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 15:41:42 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/05 10:52:49 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/05 12:40:51 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,5 +64,5 @@ void	dphi(t_philo phi)
 	fprintf(stderr, "| I am philo %.3d 🍴 \t\t\t\t|\n\
 | My left fork is at %d - my right fork is at %d  |\n\
 | I last ate %.3ld ms ago, it was my %.3ldth meal\t|\n\n", phi.phid, \
-phi.fork[0].fork, phi.fork[1].fork, phi.last_ate, phi.nb_ate);
+phi.fork[0].ifork, phi.fork[1].ifork, phi.last_ate, phi.nb_ate);
 }

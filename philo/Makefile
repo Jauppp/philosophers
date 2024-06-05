@@ -6,7 +6,7 @@
 #    By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/28 13:31:53 by cdomet-d          #+#    #+#              #
-#    Updated: 2024/06/04 14:13:19 by cdomet-d         ###   ########lyon.fr    #
+#    Updated: 2024/06/05 12:38:41 by cdomet-d         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,6 +28,7 @@ M_SRC:=	main.c \
 SRCS+= $(addprefix $(S_DIR)$(U_SUBDIR), $(U_SRC))
 U_SUBDIR:= utils/
 U_SRC:=	display.c \
+		create_structs.c \
 		error_management.c \
 		ft_atoi.c \
 		parsing.c \

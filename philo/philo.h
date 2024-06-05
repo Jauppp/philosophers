@@ -6,7 +6,7 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 15:17:05 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/05 10:50:21 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/05 12:39:07 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ number_of_philosophers\n - time_to_die\n - time_to_eat\n - time_to_sleep"
 typedef struct s_fork
 {
 	bool			fork;
+	int				ifork;
 	pthread_mutex_t	mfork;
 }	t_fork;
 
@@ -64,26 +65,33 @@ void	dpm(t_param param);
 void	dphi(t_philo phi);
 
 /* error_management.c */
-int		derr(char *err, char *param);
+int	derr(char *err, char *param);
 
 /* ft_atoi.c */
-
-int		ft_atoi(char *nptr);
+int	ft_atoi(char *nptr);
 
 /* parsing.c */
-int		isnotdigit(char *str);
-int		isdigit_param(char **args);
+int	isnotdigit(char *str);
+int	isdigit_param(char **args);
+
+/* create_structs.c */
+t_fork	create_t_fork(void);
+t_philo	create_t_philo(int phid, t_param *param);
+void	create_thread(t_philo *philo);
 
 // src -----------------------
 
 /* main.c */
-int		join_phi(t_philo *philo);
+int	join_phi(t_philo *philo);
+int	main(int argc, char *argv[]);
 
 /* routine.c */
 void	*routine(void *arg);
 
 /* initialisation.c */
-int		init_params(t_param	*param, char **args);
-int		init_philo(t_param *param, t_philo *philo);
+int	init_params(t_param	*param, char **args);
+int	init_philo(t_param *param, t_philo *philo);
+
+
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 13:15:03 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/05 10:52:10 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/05 12:47:06 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,15 +47,6 @@ int	init_params(t_param	*param, char **args)
 	return (SUCCESS);
 }
 
-static t_fork	create_t_fork(void)
-{
-	t_fork	fork;
-
-	fork.fork = true;
-	pthread_mutex_init(&fork.mfork, NULL);
-	return (fork);
-}
-
 static int	init_fork(t_param *param)
 {
 	ssize_t	i;
@@ -67,37 +58,10 @@ static int	init_fork(t_param *param)
 	while (i < param->n_philo)
 	{
 		param->arfork[i] = create_t_fork();
+		param->arfork[i].ifork = i;
 		i++;
 	}
 	return (SUCCESS);
-}
-
-static t_philo	create_t_philo(int phid, t_param *param)
-{
-	t_philo	philo;
-
-	philo.last_ate = 0;
-	philo.nb_ate = 0;
-	philo.param = param;
-	philo.phid = phid;
-	if (phid == param->n_philo)
-	{
-		philo.fork[0] = param->arfork[0];
-		philo.fork[1] = param->arfork[phid - 1];
-	}
-	else
-	{
-		philo.fork[0] = param->arfork[phid - 1];
-		philo.fork[1] = param->arfork[phid];
-	}
-	return (philo);
-}
-
-static void	create_thread(t_philo *philo)
-{
-	//TODO: check leaks when pthread_create fails
-	if (pthread_create(&philo->tid, NULL, routine, (void *)philo) != 0)
-		return ;
 }
 
 int	init_philo(t_param *param, t_philo *philo)
