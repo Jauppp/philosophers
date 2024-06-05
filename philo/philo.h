@@ -6,7 +6,7 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 15:17:05 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/04 14:20:02 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/04 16:44:30 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <limits.h>
 # include <unistd.h>
 # include <stdbool.h>
+#include <sys/time.h>
 
 # define ERROR 1
 # define SUCCESS 0
@@ -28,15 +29,17 @@ typedef struct s_fork {
 	bool	fork;
 	pthread_mutex_t	mfork;
 } t_fork;
+
 typedef struct s_param {
-	time_t			start;
+	bool			end;
+	pthread_mutex_t	init_lock;
+	ssize_t			n_must_eat;
 	ssize_t			n_philo;
+	time_t			start;
 	time_t			t_to_die;
 	time_t			t_to_eat;
 	time_t			t_to_sleep;
-	ssize_t			n_must_eat;
-	pthread_mutex_t	init_lock;
-	bool		end;
+	t_fork			*arfork;
 } t_param;
 
 typedef struct s_philo {
