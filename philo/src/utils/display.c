@@ -6,7 +6,7 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 15:41:42 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/05 12:40:51 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/06 14:03:26 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,21 @@ ssize_t	ft_putendl_fd(char *s, int fd)
 	return (len);
 }
 
+ssize_t	status_message(t_philo *philo, char *status)
+{
+	ssize_t			r_value;
+
+	pthread_mutex_lock(&philo->param->write_lock);
+	r_value = printf("[%.10ld] philo %3d %s\n", \
+	get_time_elapsed(philo->param->start),philo->phid, status);
+	pthread_mutex_unlock(&philo->param->write_lock);
+	if (r_value == -1)
+		return (-1);
+	else
+		return (SUCCESS);
+
+}
+
 ssize_t	ft_putl_fd(char *s, int fd)
 {
 	ssize_t	len;
@@ -50,10 +65,10 @@ ssize_t	ft_putl_fd(char *s, int fd)
 void	dpm(t_param param)
 {
 	printf("%.35s\n", "-- PARAMS --------------------------------------------");
-	printf("%.35s\t | %4ld | \n", "number of philo", param.n_philo);
-	printf("%.35s\t | %4ld | ms\n", "time to die", param.t_to_die);
-	printf("%.35s\t | %4ld | ms\n", "time to eat", param.t_to_eat);
-	printf("%.35s\t | %4ld | ms\n", "time to sleep", param.t_to_sleep);
+	printf("%.35s\t | %10ld | \n", "number of philo", param.n_philo);
+	printf("%.35s\t | %10ld | ms\n", "time to die", param.t_to_die);
+	printf("%.35s\t | %10ld | ms\n", "time to eat", param.t_to_eat);
+	printf("%.35s\t | %10ld | ms\n", "time to sleep", param.t_to_sleep);
 	if (param.n_must_eat != -1)
 		printf("%.35s\t | %4ld | ms\n", "must eat", param.n_must_eat);
 	printf("%.35s\n", "------------------------------------------------------");
@@ -61,8 +76,9 @@ void	dpm(t_param param)
 
 void	dphi(t_philo phi)
 {
-	fprintf(stderr, "| I am philo %.3d 🍴 \t\t\t\t|\n\
-| My left fork is at %d - my right fork is at %d  |\n\
-| I last ate %.3ld ms ago, it was my %.3ldth meal\t|\n\n", phi.phid, \
-phi.fork[0].ifork, phi.fork[1].ifork, phi.last_ate, phi.nb_ate);
+// 	fprintf(stderr, "| I am philo %.3d 🍴 \t\t\t\t|\n\
+// | My left fork is at %d - my right fork is at %d  |\n\
+// | I last ate %.3ld ms ago, it was my %.3ldth meal\t|\n\n", phi.phid, \
+// phi.fork[0].ifork, phi.fork[1].ifork, phi.last_ate, phi.nb_ate);	
+fprintf(stderr, "| I am philo %.3d 🍴 \t\t\t\t|\n", phi.phid);
 }

@@ -6,7 +6,7 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 15:17:05 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/05 12:39:07 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/06 14:03:58 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,12 @@
 # define INPUT_ERROR "Please enter in milliseconds :\n - \
 number_of_philosophers\n - time_to_die\n - time_to_eat\n - time_to_sleep"
 
+# define EATING "is eating"
+# define FORKING "has taken a fork"
+# define THINKING "is thinking"
+# define SLEEPING "is sleeping"
+# define DEAD "has died"
+
 typedef struct s_fork
 {
 	bool			fork;
@@ -35,11 +41,12 @@ typedef struct s_fork
 
 typedef struct s_param
 {
-	bool			end;
+	bool			died;
+	struct timeval	start;
 	pthread_mutex_t	init_lock;
+	pthread_mutex_t	write_lock;
 	ssize_t			n_must_eat;
 	ssize_t			n_philo;
-	time_t			start;
 	time_t			t_to_die;
 	time_t			t_to_eat;
 	time_t			t_to_sleep;
@@ -55,11 +62,11 @@ typedef struct s_philo
 	time_t			last_ate;
 	t_param			*param;
 }	t_philo;
-
 // utils ---------------------
 
 /* display.c */
 ssize_t	ft_putendl_fd(char *s, int fd);
+ssize_t	status_message(t_philo *philo, char *status);
 ssize_t	ft_putl_fd(char *s, int fd);
 void	dpm(t_param param);
 void	dphi(t_philo phi);
@@ -83,6 +90,7 @@ void	create_thread(t_philo *philo);
 
 /* main.c */
 int	join_phi(t_philo *philo);
+void	time_is_up(t_param	*param);
 int	main(int argc, char *argv[]);
 
 /* routine.c */
@@ -90,8 +98,9 @@ void	*routine(void *arg);
 
 /* initialisation.c */
 int	init_params(t_param	*param, char **args);
-int	init_philo(t_param *param, t_philo *philo);
+int	init_philo(t_param *param, t_philo *philarr);
 
-
+/* time.c */
+time_t	get_time_elapsed(struct timeval start);
 
 #endif

@@ -6,7 +6,7 @@
 #    By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/28 13:31:53 by cdomet-d          #+#    #+#              #
-#    Updated: 2024/06/05 12:38:41 by cdomet-d         ###   ########lyon.fr    #
+#    Updated: 2024/06/06 14:20:57 by cdomet-d         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,6 +23,7 @@ S_DIR= src/
 SRCS+= $(addprefix $(S_DIR), $(M_SRC))
 M_SRC:=	main.c \
 		initialisation.c \
+		time.c \
 		routine.c \
 
 SRCS+= $(addprefix $(S_DIR)$(U_SUBDIR), $(U_SRC))
@@ -66,7 +67,7 @@ fclean: clean
 	
 re: fclean all
 
-PARAM:= 10 60 60 60
+PARAM:= 10 500 500 500
 LVPARAM:= valgrind --leak-check=full --track-origins=yes
 leaks: all
 	$(LVPARAM) ./$(NAME) $(PARAM)
