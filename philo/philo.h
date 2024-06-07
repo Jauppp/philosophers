@@ -6,7 +6,7 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 15:17:05 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/06 14:03:58 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/07 17:59:51 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <unistd.h>
 # include <stdbool.h>
 # include <sys/time.h>
+# include <string.h>
 
 # define ERROR 1
 # define SUCCESS 0
@@ -55,11 +56,12 @@ typedef struct s_param
 
 typedef struct s_philo
 {
+	pthread_mutex_t	time_lock;
 	pthread_t		tid;
 	int				phid;
-	t_fork			fork[2];
+	t_fork			*fork[2];
 	size_t			nb_ate;
-	time_t			last_ate;
+	struct timeval	last_ate;
 	t_param			*param;
 }	t_philo;
 // utils ---------------------
@@ -90,7 +92,7 @@ void	create_thread(t_philo *philo);
 
 /* main.c */
 int	join_phi(t_philo *philo);
-void	time_is_up(t_param	*param);
+void	time_is_up(t_philo	*phi);
 int	main(int argc, char *argv[]);
 
 /* routine.c */

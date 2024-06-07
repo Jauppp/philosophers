@@ -6,7 +6,7 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 12:25:03 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/06 13:52:06 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/07 16:48:59 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,3 +21,4 @@ time_t	get_time_elapsed(struct timeval start)
 	return (((tv.tv_usec - start.tv_usec) / 1000) + \
 	((tv.tv_sec - start.tv_sec) * 1000));
 }
+

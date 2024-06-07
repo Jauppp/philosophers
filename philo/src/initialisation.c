@@ -6,7 +6,7 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 13:15:03 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/06 13:49:00 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/07 17:21:10 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,14 @@ int	init_philo(t_param *param, t_philo *philarr)
 		i++;
 	}
 	gettimeofday(&go, NULL);
+	i = 0;
+	while (i < param->n_philo)
+	{
+		pthread_mutex_lock(&philarr[i].time_lock);
+		philarr[i].last_ate = go;
+		pthread_mutex_unlock(&philarr[i].time_lock);
+		i++;
+	}
 	pthread_mutex_lock(&param->init_lock);
 	param->start = go;
 	pthread_mutex_unlock(&param->init_lock);

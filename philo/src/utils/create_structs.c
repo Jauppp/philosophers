@@ -6,7 +6,7 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 10:55:03 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/05 12:47:43 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/07 18:01:12 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,19 +25,19 @@ t_philo	create_t_philo(int phid, t_param *param)
 {
 	t_philo	philo;
 
-	philo.last_ate = 0;
 	philo.nb_ate = 0;
 	philo.param = param;
 	philo.phid = phid;
+	pthread_mutex_init(&philo.time_lock, NULL);
 	if (phid == param->n_philo)
 	{
-		philo.fork[0] = param->arfork[0];
-		philo.fork[1] = param->arfork[phid - 1];
+		philo.fork[0] = &param->arfork[0];
+		philo.fork[1] = &param->arfork[phid - 1];
 	}
 	else
 	{
-		philo.fork[0] = param->arfork[phid - 1];
-		philo.fork[1] = param->arfork[phid];
+		philo.fork[0] = &param->arfork[phid - 1];
+		philo.fork[1] = &param->arfork[phid];
 	}
 	return (philo);
 }

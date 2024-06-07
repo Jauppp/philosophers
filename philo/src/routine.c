@@ -6,7 +6,7 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 13:16:05 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/06 14:34:21 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/07 18:09:12 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,37 @@
 static void time_to_think(t_philo *phi)
 {
 	status_message(phi, THINKING);
-	usleep(50);
+}
+
+
+static void	release_forks(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->fork[0]->mfork);
+	philo->fork[0]->fork = true;
+	pthread_mutex_unlock(&philo->fork[0]->mfork);
+
+	pthread_mutex_lock(&philo->param->write_lock);
+	printf("[%10ld] philo %3d has put down fork %3d\n", get_time_elapsed(philo->param->start), philo->phid, philo->fork[0]->ifork);
+	pthread_mutex_unlock(&philo->param->write_lock);
+
+	pthread_mutex_lock(&philo->fork[1]->mfork);
+	philo->fork[1]->fork = true;
+	pthread_mutex_unlock(&philo->fork[1]->mfork);
+
+	pthread_mutex_lock(&philo->param->write_lock);
+	printf("[%10ld] philo %3d has put down fork %3d\n", get_time_elapsed(philo->param->start), philo->phid, philo->fork[1]->ifork);
+	pthread_mutex_unlock(&philo->param->write_lock);
+}
+
+static void	time_to_eat(t_philo *phi)
+{
+	pthread_mutex_lock(&phi->time_lock);
+	gettimeofday(&phi->last_ate, NULL);
+	pthread_mutex_unlock(&phi->time_lock);
+	phi->nb_ate += 1;
+	status_message(phi, EATING);
+	usleep(phi->param->t_to_eat * 1000);
+	release_forks(phi);
 }
 
 static bool	get_forks(t_philo *philo)
@@ -30,57 +60,38 @@ static bool	get_forks(t_philo *philo)
 
 	left_fork = false;
 	right_fork = false;
-	pthread_mutex_lock(&philo->fork[0].mfork);
-	if (philo->fork[0].fork == true)
+	pthread_mutex_lock(&philo->fork[0]->mfork);
+	if (philo->fork[0]->fork == true)
 	{
 		pthread_mutex_lock(&philo->param->write_lock);
-		printf("\tphilo %3d has taken fork %3d\n", philo->phid, philo->fork[0].ifork);
+		printf("[%10ld] philo %3d has taken fork %3d\n", get_time_elapsed(philo->param->start), philo->phid, philo->fork[0]->ifork);
 		pthread_mutex_unlock(&philo->param->write_lock);
 		// status_message(philo, FORKING);
+		philo->fork[0]->fork = false;
 		left_fork = true;
-		philo->fork[0].fork = false;
 	}
-	pthread_mutex_unlock(&philo->fork[0].mfork);
-	pthread_mutex_lock(&philo->fork[1].mfork);
-	if (philo->fork[1].fork == true)
+	pthread_mutex_unlock(&philo->fork[0]->mfork);
+	pthread_mutex_lock(&philo->fork[1]->mfork);
+	if (philo->fork[1]->fork == true)
 	{
 		pthread_mutex_lock(&philo->param->write_lock);
-		printf("\tphilo %3d has taken fork %3d\n", philo->phid, philo->fork[1].ifork);
+		printf("[%10ld] philo %3d has taken fork %3d\n", get_time_elapsed(philo->param->start), philo->phid, philo->fork[1]->ifork);
 		pthread_mutex_unlock(&philo->param->write_lock);
 		// status_message(philo, FORKING);
-		philo->fork[1].fork = false;
+		philo->fork[1]->fork = false;
 		right_fork = true;
 	}
-	pthread_mutex_unlock(&philo->fork[1].mfork);
+	pthread_mutex_unlock(&philo->fork[1]->mfork);
 	if (left_fork == true && right_fork == true)
 		return (true);
 	else
 		return (false);
 }
 
-static void	release_forks(t_philo *philo)
-{
-	pthread_mutex_lock(&philo->fork[0].mfork);
-	philo->fork[0].fork = true;
-	pthread_mutex_unlock(&philo->fork[0].mfork);
-	
-	pthread_mutex_lock(&philo->param->write_lock);
-	printf("\tphilo %3d has put down fork %3d\n", philo->phid, philo->fork[0].ifork);
-	pthread_mutex_unlock(&philo->param->write_lock);
-	
-	pthread_mutex_lock(&philo->fork[1].mfork);
-	philo->fork[1].fork = true;
-	pthread_mutex_unlock(&philo->fork[1].mfork);
-	
-	pthread_mutex_lock(&philo->param->write_lock);
-	printf("\tphilo %3d has put down fork %3d\n", philo->phid, philo->fork[1].ifork);
-	pthread_mutex_unlock(&philo->param->write_lock);
-}
-
 void	*routine(void *arg)
 {
 	t_philo			*phi;
-	time_t			go;
+	struct timeval	go;
 	bool			timeup;
 
 	phi = (t_philo *)arg;
@@ -88,10 +99,10 @@ void	*routine(void *arg)
 	while (1)
 	{
 		pthread_mutex_lock(&phi->param->init_lock);
-		go = phi->param->start.tv_usec;
+		go = phi->param->start;
 		pthread_mutex_unlock(&phi->param->init_lock);
-		if (go == 0)
-			usleep(10);
+		if (go.tv_usec == 0)
+			usleep(1000);
 		else
 			break ;
 	}
@@ -101,11 +112,9 @@ void	*routine(void *arg)
 	{
 		if (get_forks(phi))
 		{
-			status_message(phi, EATING);
-			usleep(phi->param->t_to_eat);
-			release_forks(phi);
+			time_to_eat(phi);
 			status_message(phi, SLEEPING);
-			usleep(phi->param->t_to_sleep);
+			usleep(phi->param->t_to_sleep * 1000);
 		}
 		else
 			time_to_think(phi);
@@ -115,7 +124,7 @@ void	*routine(void *arg)
 		if (timeup == true)
 			break;
 		else
-			usleep(10);
+			usleep(1000);
 	}
 	return (NULL);
 }
