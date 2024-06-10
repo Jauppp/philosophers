@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   display.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: jauseff <jauseff@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 15:41:42 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/07 18:06:41 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/08 02:11:11 by jauseff          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,12 @@ ssize_t	ft_putendl_fd(char *s, int fd)
 	return (len);
 }
 
-ssize_t	status_message(t_philo *philo, char *status)
+ssize_t	status_message(t_philo *philo, char *status, bool timeup)
 {
 	ssize_t			r_value;
 
+	if (timeup)
+		return (1);
 	pthread_mutex_lock(&philo->param->write_lock);
 	r_value = printf("[%10ld] philo %3d %s\n", \
 	get_time_elapsed(philo->param->start),philo->phid, status);
@@ -74,11 +76,11 @@ void	dpm(t_param param)
 	printf("%.35s\n", "------------------------------------------------------");
 }
 
-// void	dphi(t_philo phi)
-// {
-// // 	fprintf(stderr, "| I am philo %.3d 🍴 \t\t\t\t|\n\
-// // | My left fork is at %d - my right fork is at %d  |\n\
-// // | I last ate %.3ld ms ago, it was my %.3ldth meal\t|\n\n", phi.phid, \
-// // phi.fork[0].ifork, phi.fork[1].ifork, phi.last_ate, phi.nb_ate);	
-// 	// fprintf(stderr, "| I am philo %.3d 🍴 \t\t\t\t|\n", phi.phid);
-// }
+/*void	dphi(t_philo phi)
+{
+	fprintf(stderr, "| I am philo %.3d 🍴 \t\t\t\t|\n\
+| My left fork is at %d - my right fork is at %d  |\n\
+| I last ate %.3ld ms ago, it was my %.3ldth meal\t|\n\n", phi.phid, \
+phi.fork[0].ifork, phi.fork[1].ifork, phi.last_ate, phi.nb_ate);	
+	fprintf(stderr, "| I am philo %.3d 🍴 \t\t\t\t|\n", phi.phid);
+}*/

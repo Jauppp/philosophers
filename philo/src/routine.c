@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   routine.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: jauseff <jauseff@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 13:16:05 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/07 18:09:12 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/08 02:09:28 by jauseff          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,11 @@
 
 static void time_to_think(t_philo *phi)
 {
-	status_message(phi, THINKING);
+	pthread_mutex_lock(&phi->time_lock);
+	if (phi->has_thought == false)
+		status_message(phi, THINKING, timeup);
+	pthread_mutex_unlock(&phi->time_lock);
+	usleep(100000);
 }
 
 
@@ -48,7 +52,10 @@ static void	time_to_eat(t_philo *phi)
 	gettimeofday(&phi->last_ate, NULL);
 	pthread_mutex_unlock(&phi->time_lock);
 	phi->nb_ate += 1;
-	status_message(phi, EATING);
+	pthread_mutex_lock(&phi->time_lock);
+	phi->has_thought = false;
+	pthread_mutex_unlock(&phi->time_lock);
+	status_message(phi, EATING);, timeup
 	usleep(phi->param->t_to_eat * 1000);
 	release_forks(phi);
 }
@@ -66,7 +73,7 @@ static bool	get_forks(t_philo *philo)
 		pthread_mutex_lock(&philo->param->write_lock);
 		printf("[%10ld] philo %3d has taken fork %3d\n", get_time_elapsed(philo->param->start), philo->phid, philo->fork[0]->ifork);
 		pthread_mutex_unlock(&philo->param->write_lock);
-		// status_message(philo, FORKING);
+		// status_message(philo, FORKIN, timeupG);
 		philo->fork[0]->fork = false;
 		left_fork = true;
 	}
@@ -77,7 +84,7 @@ static bool	get_forks(t_philo *philo)
 		pthread_mutex_lock(&philo->param->write_lock);
 		printf("[%10ld] philo %3d has taken fork %3d\n", get_time_elapsed(philo->param->start), philo->phid, philo->fork[1]->ifork);
 		pthread_mutex_unlock(&philo->param->write_lock);
-		// status_message(philo, FORKING);
+		// status_message(philo, FORKIN, timeupG);
 		philo->fork[1]->fork = false;
 		right_fork = true;
 	}
@@ -102,7 +109,7 @@ void	*routine(void *arg)
 		go = phi->param->start;
 		pthread_mutex_unlock(&phi->param->init_lock);
 		if (go.tv_usec == 0)
-			usleep(1000);
+			usleep(2000);
 		else
 			break ;
 	}
@@ -110,21 +117,25 @@ void	*routine(void *arg)
 		time_to_think(phi);
 	while (1)
 	{
-		if (get_forks(phi))
-		{
-			time_to_eat(phi);
-			status_message(phi, SLEEPING);
-			usleep(phi->param->t_to_sleep * 1000);
-		}
-		else
-			time_to_think(phi);
 		pthread_mutex_lock(&phi->param->init_lock);
 		timeup = phi->param->died;
 		pthread_mutex_unlock(&phi->param->init_lock);
 		if (timeup == true)
 			break;
+		if (get_forks(phi))
+		{
+			time_to_eat(phi);
+			status_message(phi, SLEEPING, timeup);
+			usleep(phi->param->t_to_sleep * 1000);
+		}
 		else
-			usleep(1000);
+		{
+			status_message(phi, THINKING, timeup);
+			time_to_think(phi);
+			pthread_mutex_lock(&phi->time_lock);
+			phi->has_thought = true;
+			pthread_mutex_unlock(&phi->time_lock);
+		}
 	}
 	return (NULL);
 }

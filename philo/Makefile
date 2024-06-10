@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+         #
+#    By: jauseff <jauseff@student.42lyon.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/28 13:31:53 by cdomet-d          #+#    #+#              #
-#    Updated: 2024/06/07 18:09:58 by cdomet-d         ###   ########lyon.fr    #
+#    Updated: 2024/06/08 01:50:41 by jauseff          ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -67,7 +67,7 @@ fclean: clean
 	
 re: fclean all
 
-PARAM:= 2 100 200 200
+PARAM:= 10 500 200 200
 LVPARAM:= valgrind --leak-check=full --track-origins=yes
 leaks: all
 	$(LVPARAM) ./$(NAME) $(PARAM)

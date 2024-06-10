@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: jauseff <jauseff@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 15:17:05 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/07 17:59:51 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/08 02:10:17 by jauseff          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ typedef struct s_param
 typedef struct s_philo
 {
 	pthread_mutex_t	time_lock;
+	bool			has_thought;
 	pthread_t		tid;
 	int				phid;
 	t_fork			*fork[2];
@@ -68,7 +69,7 @@ typedef struct s_philo
 
 /* display.c */
 ssize_t	ft_putendl_fd(char *s, int fd);
-ssize_t	status_message(t_philo *philo, char *status);
+ssize_t	status_message(t_philo *philo, char *status, bool timeup);
 ssize_t	ft_putl_fd(char *s, int fd);
 void	dpm(t_param param);
 void	dphi(t_philo phi);

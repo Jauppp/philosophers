@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: jauseff <jauseff@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 15:16:29 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/07 18:21:08 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/08 01:34:00 by jauseff          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,21 +43,14 @@ void	time_is_up(t_philo	*philarr)
 	
 	i = 0;
 	n_phi = philarr->param->n_philo;
-	printf("%ld\n", n_phi);
-	// usleep(3000000);
-	// pthread_mutex_lock(&philarr[i].param->init_lock);
-	// philarr[i].param->died = true;
-	// pthread_mutex_unlock(&philarr[i].param->init_lock);
-	while (i < n_phi)
+	while (1)
 	{
 		pthread_mutex_lock(&philarr[i].time_lock);
 		time = get_time_elapsed(philarr[i].last_ate);
 		pthread_mutex_unlock(&philarr[i].time_lock);
-		pthread_mutex_lock(&philarr[i].param->write_lock);
-		printf("time : %ld | t_to_die : %ld\n", time, philarr[i].param->t_to_die);
-		pthread_mutex_unlock(&philarr[i].param->write_lock);
-		if (i == (n_phi - 1))
-			i = 0;
+		// pthread_mutex_lock(&philarr[i].param->write_lock);
+		// printf("time : %ld | t_to_die : %ld\n", time, philarr[i].param->t_to_die);
+		// pthread_mutex_unlock(&philarr[i].param->write_lock);
 		if (time >= philarr[i].param->t_to_die)
 		{
 			pthread_mutex_lock(&philarr[i].param->init_lock);
@@ -66,7 +59,8 @@ void	time_is_up(t_philo	*philarr)
 			status_message(philarr + i, DEAD);
 			return ;
 		}
-		i++;
+		i = (i + 1) % n_phi;
+		usleep(500);
 	}
 }
 
