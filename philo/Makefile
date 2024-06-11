@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jauseff <jauseff@student.42lyon.fr>        +#+  +:+       +#+         #
+#    By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/28 13:31:53 by cdomet-d          #+#    #+#              #
-#    Updated: 2024/06/08 01:50:41 by jauseff          ###   ########lyon.fr    #
+#    Updated: 2024/06/11 12:17:25 by cdomet-d         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,6 +25,7 @@ M_SRC:=	main.c \
 		initialisation.c \
 		time.c \
 		routine.c \
+		routine_utils.c \
 
 SRCS+= $(addprefix $(S_DIR)$(U_SUBDIR), $(U_SRC))
 U_SUBDIR:= utils/
@@ -67,7 +68,7 @@ fclean: clean
 	
 re: fclean all
 
-PARAM:= 10 500 200 200
+PARAM:= 3 600 100 100
 LVPARAM:= valgrind --leak-check=full --track-origins=yes
 leaks: all
 	$(LVPARAM) ./$(NAME) $(PARAM)

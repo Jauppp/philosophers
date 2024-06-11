@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jauseff <jauseff@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 15:16:29 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/08 01:34:00 by jauseff          ###   ########lyon.fr   */
+/*   Updated: 2024/06/11 15:35:52 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,55 +35,57 @@ int	join_phi(t_philo *philo)
 	return (SUCCESS);
 }
 
-void	time_is_up(t_philo	*philarr)
+void	time_is_up(t_philo	*philarray)
 {
 	time_t	time;
 	size_t	n_phi;
 	size_t	i;
-	
+
 	i = 0;
-	n_phi = philarr->param->n_philo;
+	n_phi = philarray->param->n_philo;
 	while (1)
 	{
-		pthread_mutex_lock(&philarr[i].time_lock);
-		time = get_time_elapsed(philarr[i].last_ate);
-		pthread_mutex_unlock(&philarr[i].time_lock);
-		// pthread_mutex_lock(&philarr[i].param->write_lock);
-		// printf("time : %ld | t_to_die : %ld\n", time, philarr[i].param->t_to_die);
-		// pthread_mutex_unlock(&philarr[i].param->write_lock);
-		if (time >= philarr[i].param->t_to_die)
+		pthread_mutex_lock(&philarray[i].time_lock);
+		time = get_time_elapsed(philarray[i].last_ate);
+		pthread_mutex_unlock(&philarray[i].time_lock);
+		if (time >= philarray[i].param->t_to_die || all_fed(philarray))
 		{
-			pthread_mutex_lock(&philarr[i].param->init_lock);
-			philarr[i].param->died = true;
-			pthread_mutex_unlock(&philarr[i].param->init_lock);
-			status_message(philarr + i, DEAD);
+			pthread_mutex_lock(&philarray[i].param->init_lock);
+			philarray[i].param->died = true;
+			pthread_mutex_unlock(&philarray[i].param->init_lock);
+			if (all_fed(philarray))
+			{	
+				printf("all philos ate n times\n");
+				return ;
+			}
+			status_message(philarray + i, DEAD);
 			return ;
 		}
 		i = (i + 1) % n_phi;
-		usleep(500);
+		usleep(10);
 	}
 }
 
 int	main(int argc, char *argv[])
 {
 	t_param		param;
-	t_philo		*philarr;
+	t_philo		*philarray;
 
-	philarr = NULL;
+	philarray = NULL;
 	if (argc > 6 || argc < 5)
 		return (derr(INPUT_ERROR, NULL));
 	if (init_params(&param, argv) == ERROR)
 		return (ERROR);
-	philarr = malloc((param.n_philo + 1) * sizeof (t_philo));
-	if (!philarr)
+	philarray = malloc((param.n_philo + 1) * sizeof (t_philo));
+	if (!philarray)
 		return (derr("Memory allocation issue", NULL));
-	memset((t_philo *)philarr, 0, sizeof(t_philo));
-	if (init_philo(&param, philarr) == ERROR)
+	memset((t_philo *)philarray, 0, sizeof(t_philo));
+	if (init_philo(&param, philarray) == ERROR)
 	{
-		join_phi(philarr);
+		join_phi(philarray);
 		return (ERROR);
 	}
-	time_is_up(philarr);
-	join_phi(philarr);
+	time_is_up(philarray);
+	join_phi(philarray);
 	return (SUCCESS);
 }

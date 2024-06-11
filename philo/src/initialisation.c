@@ -6,7 +6,7 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 13:15:03 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/07 17:21:10 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/11 12:11:37 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,34 +65,23 @@ static int	init_fork(t_param *param)
 	return (SUCCESS);
 }
 
-int	init_philo(t_param *param, t_philo *philarr)
+int	init_philo(t_param *param, t_philo *philarray)
 {
-	ssize_t		i;
-	struct timeval	go;
+	ssize_t			i;
 
 	i = 0;
 	if (init_fork(param) == ERROR)
 		return (derr("Error allocating memory", NULL));
 	pthread_mutex_init(&param->init_lock, NULL);
+	pthread_mutex_init(&param->write_lock, NULL);
 	while (i < param->n_philo)
 	{
-		philarr[i] = create_t_philo(i + 1, param);
-		create_thread(philarr + i);
-		if (philarr[i].tid == ERROR)
+		philarray[i] = create_t_philo(i + 1, param);
+		create_thread(philarray + i);
+		if (philarray[i].tid == ERROR)
 			return (ERROR);
 		i++;
 	}
-	gettimeofday(&go, NULL);
-	i = 0;
-	while (i < param->n_philo)
-	{
-		pthread_mutex_lock(&philarr[i].time_lock);
-		philarr[i].last_ate = go;
-		pthread_mutex_unlock(&philarr[i].time_lock);
-		i++;
-	}
-	pthread_mutex_lock(&param->init_lock);
-	param->start = go;
-	pthread_mutex_unlock(&param->init_lock);
+	get_starting_time(philarray, param);
 	return (SUCCESS);
 }

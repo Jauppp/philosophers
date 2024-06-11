@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   create_structs.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jauseff <jauseff@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 10:55:03 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/08 01:55:47 by jauseff          ###   ########lyon.fr   */
+/*   Updated: 2024/06/11 15:13:19 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,11 @@ t_philo	create_t_philo(int phid, t_param *param)
 	philo.param = param;
 	philo.phid = phid;
 	pthread_mutex_init(&philo.time_lock, NULL);
+	pthread_mutex_init(&philo.var_lock, NULL);
 	if (phid == param->n_philo)
 	{
-		philo.fork[0] = &param->arfork[0];
-		philo.fork[1] = &param->arfork[phid - 1];
+		philo.fork[1] = &param->arfork[0];
+		philo.fork[0] = &param->arfork[phid - 1];
 	}
 	else
 	{

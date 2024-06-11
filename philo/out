@@ -1,9 +1,0 @@
-.bdir/routine.o
-
-[0;36m[1m-- Making philo... ---------------------
-
-[0mcc -Werror -Wextra -Wall -g3  .bdir/main.o .bdir/initialisation.o .bdir/time.o .bdir/routine.o .bdir/utils/display.o .bdir/utils/create_structs.o .bdir/utils/error_management.o .bdir/utils/ft_atoi.o .bdir/utils/parsing.o -o philo
-
-valgrind --tool=helgrind ./philo 2 500 200 200
-[       500] philo   1 has died
-[       505] philo   1 is thinking
