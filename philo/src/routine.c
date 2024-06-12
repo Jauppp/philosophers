@@ -6,16 +6,16 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 13:16:05 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/11 15:35:05 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/12 15:08:49 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static void	time_to_think(t_philo *phi, bool *thought)
+static void	time_to_think(t_philo *philo, bool *thought)
 {
 	if (*thought == false)
-		status_message(phi, THINKING);
+		status_message(philo, THINKING);
 	*thought = true;
 	usleep(50);
 }
@@ -31,18 +31,18 @@ static void	release_forks(t_philo *philo, int *forks)
 	*forks = 0;
 }
 
-static void	time_to_eat(t_philo *phi, int *forks, bool *thought)
+static void	time_to_eat(t_philo *philo, int *forks, bool *thought)
 {
-	pthread_mutex_lock(&phi->var_lock);
-	phi->nb_ate += 1;
-	pthread_mutex_unlock(&phi->var_lock);
+	pthread_mutex_lock(&philo->time_lock);
+	gettimeofday(&philo->last_ate, NULL);
+	pthread_mutex_unlock(&philo->time_lock);
+	status_message(philo, EATING);
+	_wait(philo->arg->t_eat);
+	release_forks(philo, forks);
+	pthread_mutex_lock(&philo->var_lock);
+	philo->nb_ate += 1;
+	pthread_mutex_unlock(&philo->var_lock);
 	*thought = false;
-	pthread_mutex_lock(&phi->time_lock);
-	gettimeofday(&phi->last_ate, NULL);
-	pthread_mutex_unlock(&phi->time_lock);
-	status_message(phi, EATING);
-	_wait(phi->param->t_to_eat);
-	release_forks(phi, forks);
 }
 
 static bool	get_forks(t_philo *philo, int *forks)
@@ -74,26 +74,26 @@ static bool	get_forks(t_philo *philo, int *forks)
 
 void	*routine(void *arg)
 {
-	t_philo	*phi;
+	t_philo	*philo;
 	int		forks;
 	bool	thought;
 
-	phi = (t_philo *)arg;
+	philo = (t_philo *)arg;
 	forks = 0;
 	thought = false;
-	wait_to_go(phi);
-	if (phi->phid % 2)
-		usleep((phi->param->t_to_eat / 2) * 1000);
-	while (alive(phi))
+	wait_to_go(philo);
+	if (philo->phid % 2)
+		usleep((philo->arg->t_eat / 2) * 1000);
+	while (alive(philo))
 	{
-		if (get_forks(phi, &forks))
+		if (get_forks(philo, &forks))
 		{
-			time_to_eat(phi, &forks, &thought);
-			status_message(phi, SLEEPING);
-			_wait(phi->param->t_to_sleep);
+			time_to_eat(philo, &forks, &thought);
+			status_message(philo, SLEEPING);
+			_wait(philo->arg->t_sleep);
 		}
 		else
-			time_to_think(phi, &thought);
+			time_to_think(philo, &thought);
 	}
 	return (NULL);
 }

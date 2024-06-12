@@ -6,82 +6,78 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 13:15:03 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/11 12:11:37 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/12 17:36:55 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-// Your(s) program(s) should take the following arguments:
-	// - number_of_philosophers 
-	// - time_to_die 
-	// - time_to_eat 
-	// - time_to_sleep
-	// - [number_of_times_each_philosopher_must_eat
-
-int	init_params(t_param	*param, char **args)
+int	init_args(t_arg	*arg, char **args)
 {
 	if (isdigit_param(args) == ERROR)
 		return (ERROR);
-	param->n_philo = ft_atoi(args[1]);
-	if (param->n_philo < 1)
+	arg->n_philo = _atoi(args[1]);
+	if (arg->n_philo < 1)
 		return (derr("Invalid argument: ", args[1]));
-	param->t_to_die = ft_atoi(args[2]);
-	if (param->t_to_die < 1)
+	arg->t_die = _atoi(args[2]);
+	if (arg->t_die < 1)
 		return (derr("Invalid argument: ", args[2]));
-	param->t_to_eat = ft_atoi(args[3]);
-	if (param->t_to_eat < 1)
+	arg->t_eat = _atoi(args[3]);
+	if (arg->t_eat < 1)
 		return (derr("Invalid argument: ", args[3]));
-	param->t_to_sleep = ft_atoi(args[4]);
-	if (param->t_to_sleep < 1)
+	arg->t_sleep = _atoi(args[4]);
+	if (arg->t_sleep < 1)
 		return (derr("Invalid argument: ", args[4]));
 	if (args[5])
 	{
-		param->n_must_eat = ft_atoi(args[5]);
-		if (param->t_to_sleep < 1)
+		arg->max_meals = _atoi(args[5]);
+		if (arg->max_meals < 1)
 			return (derr("Invalid argument: ", args[5]));
 	}
 	else
-		param->n_must_eat = -1;
-	param->start.tv_sec = 0;
-	param->died = false;
+		arg->max_meals = -1;
+	memset(&arg->start, 0, sizeof (struct timeval));
+	arg->died = false;
 	return (SUCCESS);
 }
 
-static int	init_fork(t_param *param)
+static int	init_fork(t_arg *arg)
 {
 	ssize_t	i;
 
 	i = 0;
-	param->arfork = malloc(param->n_philo * sizeof(t_fork));
-	if (!param->arfork)
+	arg->arfork = malloc(arg->n_philo * sizeof(t_fork));
+	if (!arg->arfork)
 		return (ERROR);
-	while (i < param->n_philo)
+	while (i < arg->n_philo)
 	{
-		param->arfork[i] = create_t_fork();
-		param->arfork[i].ifork = i;
+		arg->arfork[i] = create_t_fork();
+		arg->arfork[i].ifork = i;
 		i++;
 	}
 	return (SUCCESS);
 }
 
-int	init_philo(t_param *param, t_philo *philarray)
+int	init_philo(t_arg *arg, t_philo *pharr)
 {
-	ssize_t			i;
+	ssize_t	i;
 
 	i = 0;
-	if (init_fork(param) == ERROR)
+	if (init_fork(arg) == ERROR)
 		return (derr("Error allocating memory", NULL));
-	pthread_mutex_init(&param->init_lock, NULL);
-	pthread_mutex_init(&param->write_lock, NULL);
-	while (i < param->n_philo)
+	//TODO : protect mutex init
+	pthread_mutex_init(&arg->init_lock, NULL);
+	pthread_mutex_init(&arg->write_lock, NULL);
+	while (i < arg->n_philo)
 	{
-		philarray[i] = create_t_philo(i + 1, param);
-		create_thread(philarray + i);
-		if (philarray[i].tid == ERROR)
+		pharr[i] = create_t_philo(i + 1, arg);
+		if (create_thread(pharr + i) != 0)
+		{
+			arg->n_philo = i;
 			return (ERROR);
+		}
 		i++;
 	}
-	get_starting_time(philarray, param);
+	get_starting_time(pharr, arg);
 	return (SUCCESS);
 }

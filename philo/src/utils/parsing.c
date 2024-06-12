@@ -6,7 +6,7 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 12:57:13 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/11 11:39:49 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/12 17:35:36 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,7 @@ int	isnotdigit(char *str)
 	while (str[i])
 	{
 		if (str[i] < '0' || str[i] > '9')
-		{
 			return (ERROR);
-		}
 		i++;
 	}
 	return (SUCCESS);
@@ -38,7 +36,7 @@ int	isdigit_param(char **args)
 	while (args[i])
 	{
 		if (isnotdigit(args[i]) == ERROR)
-			return (derr("Alpha character in", args[i]));
+			return (derr("Alpha character in ", args[i]));
 		i++;
 	}
 	return (SUCCESS);

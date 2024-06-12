@@ -6,7 +6,7 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 15:41:42 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/11 14:39:26 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/12 17:05:37 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,12 +51,15 @@ ssize_t	status_message(t_philo *philo, char *status)
 {
 	ssize_t	r_value;
 
+	pthread_mutex_lock(&philo->arg->write_lock);
 	if (alive(philo) == false && ft_strncmp(status, "died", 4) != 0)
+	{
+		pthread_mutex_unlock(&philo->arg->write_lock);
 		return (1);
-	pthread_mutex_lock(&philo->param->write_lock);
-	r_value = printf("%ld %d %s\n", \
-	get_time_elapsed(philo->param->start), philo->phid, status);
-	pthread_mutex_unlock(&philo->param->write_lock);
+	}
+	r_value = printf("%-5ld %-3d %s\n", \
+	get_time_elapsed(philo->arg->start), philo->phid, status);
+	pthread_mutex_unlock(&philo->arg->write_lock);
 	if (r_value == -1)
 		return (-1);
 	else

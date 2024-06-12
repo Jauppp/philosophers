@@ -6,7 +6,7 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 12:25:03 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/11 15:57:25 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/12 15:00:03 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,4 +36,14 @@ void	_wait(time_t time)
 		usleep(50);
 		elapsed = get_time_elapsed(start_wait);
 	}
+}
+
+time_t	update_time(t_philo *philo)
+{
+	time_t	time;
+
+	pthread_mutex_lock(&philo->time_lock);
+	time = get_time_elapsed(philo->last_ate);
+	pthread_mutex_unlock(&philo->time_lock);
+	return (time);
 }
