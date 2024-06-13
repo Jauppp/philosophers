@@ -6,7 +6,7 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 15:17:05 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/12 17:23:00 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/13 12:41:49 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ number_of_philosophers\n - time_to_die\n - time_to_eat\n - time_to_sleep"
 typedef struct s_fork
 {
 	bool			fork;
-	int				ifork;
+	bool			init_success;
 	pthread_mutex_t	mfork;
 }	t_fork;
 

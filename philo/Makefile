@@ -6,7 +6,7 @@
 #    By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/28 13:31:53 by cdomet-d          #+#    #+#              #
-#    Updated: 2024/06/12 17:30:16 by cdomet-d         ###   ########lyon.fr    #
+#    Updated: 2024/06/13 13:27:36 by cdomet-d         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME:= philo
 BDIR:= .bdir/
 
 CC := cc
-CFLAGS := -Werror -Wextra -Wall -O3
+CFLAGS := -Werror -Wextra -Wall -Ofast
 CPPFLAGS := -I inc/ -MMD -MP
 MAKEFLAGS += --no-print-directory
 S_DIR= src/
@@ -47,7 +47,7 @@ $(NAME): $(OBJS)
 	@printf '$(CB)%.40s\n\n$(R)' "-- Making $(NAME)... ---------------------------------------------------------------------"
 	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 	@echo
-
+	
 $(BDIR)%.o: $(S_DIR)%.c
 	@mkdir -p $(dir $@)
 	@echo "$@"

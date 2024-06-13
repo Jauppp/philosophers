@@ -6,11 +6,20 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 13:15:03 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/12 17:36:55 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/13 13:12:40 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+static int	init_mutexes(pthread_mutex_t *mutex_1, pthread_mutex_t *mutex_2)
+{
+	if (pthread_mutex_init(mutex_1, NULL) != 0)
+		return (derr("Error initialising mutex", NULL));
+	if (pthread_mutex_init(mutex_2, NULL) != 0)
+		return (derr("Error initialising mutex", NULL));
+	return (SUCCESS);
+}
 
 int	init_args(t_arg	*arg, char **args)
 {
@@ -49,10 +58,13 @@ static int	init_fork(t_arg *arg)
 	arg->arfork = malloc(arg->n_philo * sizeof(t_fork));
 	if (!arg->arfork)
 		return (ERROR);
+	memset((t_fork *)arg->arfork, 0, sizeof(t_fork));
 	while (i < arg->n_philo)
 	{
 		arg->arfork[i] = create_t_fork();
-		arg->arfork[i].ifork = i;
+		if (pthread_mutex_init(&arg->arfork[i].mfork, NULL) != 0)
+			return (free(arg->arfork), derr("Error initialising mutex", NULL));
+		arg->arfork[i].init_success = true;
 		i++;
 	}
 	return (SUCCESS);
@@ -62,21 +74,21 @@ int	init_philo(t_arg *arg, t_philo *pharr)
 {
 	ssize_t	i;
 
-	i = 0;
+	i = -1;
 	if (init_fork(arg) == ERROR)
-		return (derr("Error allocating memory", NULL));
-	//TODO : protect mutex init
-	pthread_mutex_init(&arg->init_lock, NULL);
-	pthread_mutex_init(&arg->write_lock, NULL);
-	while (i < arg->n_philo)
+		return (derr("Error initialising fork array", NULL));
+	if (init_mutexes(&arg->init_lock, &arg->write_lock) != 0)
+		return (free(arg->arfork), ERROR);
+	while (++i < arg->n_philo)
 	{
 		pharr[i] = create_t_philo(i + 1, arg);
+		if (init_mutexes(&pharr[i].time_lock, &pharr[i].var_lock) != 0)
+			return (free(arg->arfork), derr("Error initialising mutex", NULL));
 		if (create_thread(pharr + i) != 0)
 		{
 			arg->n_philo = i;
-			return (ERROR);
+			return (free(arg->arfork), ERROR);
 		}
-		i++;
 	}
 	get_starting_time(pharr, arg);
 	return (SUCCESS);

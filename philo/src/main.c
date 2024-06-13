@@ -6,7 +6,7 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 15:16:29 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/12 17:02:43 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/13 13:10:27 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,21 +18,23 @@ int	join_phi(t_philo *pharr)
 	int		err;
 
 	i = 0;
-	if (!pharr)
-		return (SUCCESS);
-	while (i < pharr->arg->n_philo)
+	if (pharr[i].tid != 0)
 	{
-		err = pthread_join(pharr[i++].tid, NULL);
-		if (err != 0)
+		while (i < pharr->arg->n_philo)
 		{
-			printf("%d\n", err);
-			return (derr("Error joining threads: ", NULL));
+			err = pthread_join(pharr[i].tid, NULL);
+			if (err != 0)
+			{
+				printf("%d\n", err);
+				return (derr("Error joining threads: ", NULL));
+			}
+			i++;
 		}
+		destroy_t_fork(pharr->arg);
+		pthread_mutex_destroy(&pharr->arg->init_lock);
+		pthread_mutex_destroy(&pharr->arg->write_lock);
+		free(pharr->arg->arfork);
 	}
-	destroy_t_fork(pharr->arg);
-	pthread_mutex_destroy(&pharr->arg->init_lock);
-	pthread_mutex_destroy(&pharr->arg->write_lock);
-	free(pharr->arg->arfork);
 	free(pharr);
 	return (SUCCESS);
 }

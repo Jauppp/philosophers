@@ -6,7 +6,7 @@
 /*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 13:16:05 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/12 15:08:49 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/13 13:49:04 by cdomet-d         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,10 @@ static bool	get_forks(t_philo *philo, int *forks)
 	pthread_mutex_lock(&philo->fork[0]->mfork);
 	if (philo->fork[0]->fork == true)
 	{
-		*forks += 1;
 		philo->fork[0]->fork = false;
 		pthread_mutex_unlock(&philo->fork[0]->mfork);
 		status_message(philo, FORKING);
+		*forks += 1;
 	}
 	else
 		pthread_mutex_unlock(&philo->fork[0]->mfork);
@@ -83,7 +83,7 @@ void	*routine(void *arg)
 	thought = false;
 	wait_to_go(philo);
 	if (philo->phid % 2)
-		usleep((philo->arg->t_eat / 2) * 1000);
+		_wait(philo->arg->t_eat / 2);
 	while (alive(philo))
 	{
 		if (get_forks(philo, &forks))
