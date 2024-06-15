@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+         #
+#    By: jauseff <jauseff@student.42lyon.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/28 13:31:53 by cdomet-d          #+#    #+#              #
-#    Updated: 2024/06/13 13:27:36 by cdomet-d         ###   ########lyon.fr    #
+#    Updated: 2024/06/15 16:25:16 by jauseff          ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,7 +40,6 @@ DEPS := $(OBJS:%.o=%.d)
 RM := rm -rf
 
 all: $(NAME)
-bonus : $(BONUS)
 
 $(NAME): $(OBJS)
 	@echo

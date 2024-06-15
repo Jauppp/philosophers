@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cdomet-d <cdomet-d@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: jauseff <jauseff@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 15:16:29 by cdomet-d          #+#    #+#             */
-/*   Updated: 2024/06/13 13:10:27 by cdomet-d         ###   ########lyon.fr   */
+/*   Updated: 2024/06/15 16:21:38 by jauseff          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,8 @@ int	main(int argc, char *argv[])
 {
 	t_arg		arg;
 	t_philo		*pharr;
+
+	printf("%ld\n", __STDC_VERSION__);
 
 	pharr = NULL;
 	if (argc > 6 || argc < 5)
